@@ -1,6 +1,6 @@
 # FarmConnect Backend
 
-FarmConnect Backend is a Node.js, Express, and MariaDB/MySQL API for an agricultural marketplace. Farmers can publish produce listings, buyers can send inquiries and order requests, and admins can manage users, products, orders, and categories.
+FarmConnect Backend is the Node.js, Express, and MariaDB/MySQL API for the FarmConnect agricultural marketplace. Farmers can publish produce listings, buyers can send inquiries and order requests, and admins can manage users, products, orders, and categories.
 
 ## Tech Stack
 
@@ -22,25 +22,59 @@ FarmConnect Backend is a Node.js, Express, and MariaDB/MySQL API for an agricult
 - `database/seed.sql`: Adds sample users, profiles, categories, products, orders, and inquiries.
 - `server.js`: Starts Express and registers all route groups.
 
-## Database Setup
+## Prerequisites
 
-1. Create and load the schema:
+- Node.js 18 or newer
+- npm
+- MariaDB or MySQL
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Copy the environment template:
+
+```bash
+cp .env.example .env
+```
+
+3. Edit `.env` with your database credentials and local frontend URL:
+
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_database_password
+DB_NAME=farmconnect
+JWT_SECRET=replace_this_with_a_long_random_secret
+JWT_EXPIRES_IN=1d
+CLIENT_URL=http://localhost:5173
+CLIENT_URLS=http://localhost:5173,http://127.0.0.1:5173
+```
+
+4. Create the database and tables:
 
 ```bash
 mysql -u root -p < database/schema.sql
 ```
 
-2. Load sample data:
+5. Load sample data:
 
 ```bash
 mysql -u root -p farmconnect < database/seed.sql
 ```
 
-3. Copy `.env.example` to `.env` and update the database credentials:
+6. Start the development server:
 
 ```bash
-cp .env.example .env
+npm run dev
 ```
+
+The backend runs at `http://localhost:5000` by default.
 
 ## Environment Variables
 
@@ -52,11 +86,11 @@ cp .env.example .env
 - `JWT_SECRET`: Secret key used to sign JWTs.
 - `JWT_EXPIRES_IN`: Token lifetime, for example `1d`.
 - `CLIENT_URL`: Frontend URL allowed by CORS.
+- `CLIENT_URLS`: Comma-separated list of additional frontend URLs allowed by CORS.
 
-## Run the Backend
+## Run Commands
 
 ```bash
-npm install
 npm run dev
 ```
 
@@ -66,6 +100,20 @@ For production-style startup:
 npm start
 ```
 
+## Verify the Backend
+
+Open this URL after starting the server:
+
+```text
+http://localhost:5000
+```
+
+You should see:
+
+```json
+{ "message": "FarmConnect API is running." }
+```
+
 ## Default Login Accounts
 
 All seeded accounts use the password `password123`.
@@ -73,6 +121,13 @@ All seeded accounts use the password `password123`.
 - Admin: `admin@farmconnect.test`
 - Farmer: `farmer1@farmconnect.test`
 - Buyer: `buyer1@farmconnect.test`
+
+## Troubleshooting
+
+- If `npm run dev` fails because `nodemon` is missing, rerun `npm install`.
+- If database login fails, check `DB_USER`, `DB_PASSWORD`, and `DB_HOST` in `.env`.
+- If the database does not exist, rerun `mysql -u root -p < database/schema.sql`.
+- If the frontend receives a CORS error, add the exact frontend origin to `CLIENT_URLS`, then restart the backend.
 
 ## JWT Authentication
 
