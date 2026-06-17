@@ -13,8 +13,23 @@ const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+].filter(Boolean);
 
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
+app.use(cors({
+  origin: (origin, callback) => {
+    // Browser requests include an origin. Tools like curl may not, so we allow missing origins.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("This origin is not allowed by CORS."));
+  }
+}));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
