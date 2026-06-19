@@ -18,13 +18,13 @@ async function updateFarmerProfile(req, res) {
     `INSERT INTO farmer_profiles
       (user_id, farm_name, farm_description, district, subcounty, village, address)
      VALUES (?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-      farm_name = VALUES(farm_name),
-      farm_description = VALUES(farm_description),
-      district = VALUES(district),
-      subcounty = VALUES(subcounty),
-      village = VALUES(village),
-      address = VALUES(address)`,
+     ON CONFLICT (user_id) DO UPDATE SET
+      farm_name = EXCLUDED.farm_name,
+      farm_description = EXCLUDED.farm_description,
+      district = EXCLUDED.district,
+      subcounty = EXCLUDED.subcounty,
+      village = EXCLUDED.village,
+      address = EXCLUDED.address`,
     [req.user.id, farm_name, farm_description, district, subcounty, village, address]
   );
 
@@ -42,11 +42,11 @@ async function updateBuyerProfile(req, res) {
     `INSERT INTO buyer_profiles
       (user_id, buyer_type, business_name, district, address)
      VALUES (?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-      buyer_type = VALUES(buyer_type),
-      business_name = VALUES(business_name),
-      district = VALUES(district),
-      address = VALUES(address)`,
+     ON CONFLICT (user_id) DO UPDATE SET
+      buyer_type = EXCLUDED.buyer_type,
+      business_name = EXCLUDED.business_name,
+      district = EXCLUDED.district,
+      address = EXCLUDED.address`,
     [req.user.id, buyer_type, business_name, district, address]
   );
 

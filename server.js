@@ -13,6 +13,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 const allowedOrigins = [
   process.env.CLIENT_URL,
   ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),

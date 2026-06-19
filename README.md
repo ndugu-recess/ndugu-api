@@ -1,11 +1,11 @@
 # FarmConnect Backend
 
-FarmConnect Backend is the Node.js, Express, and MariaDB/MySQL API for the FarmConnect agricultural marketplace. Farmers can publish produce listings, buyers can send inquiries and order requests, and admins can manage users, products, orders, and categories.
+FarmConnect Backend is the Node.js, Express, and PostgreSQL API for the FarmConnect agricultural marketplace. Farmers can publish produce listings, buyers can send inquiries and order requests, and admins can manage users, products, orders, and categories.
 
 ## Tech Stack
 
 - Node.js and Express.js
-- MariaDB/MySQL with `mysql2`
+- PostgreSQL with `pg`
 - JWT authentication with `jsonwebtoken`
 - Password hashing with `bcrypt`
 - Image uploads with `multer`
@@ -13,7 +13,7 @@ FarmConnect Backend is the Node.js, Express, and MariaDB/MySQL API for the FarmC
 
 ## Folder Structure
 
-- `config/db.js`: Creates the MariaDB/MySQL connection pool.
+- `config/db.js`: Creates the PostgreSQL connection pool.
 - `controllers/`: Holds request logic for auth, products, orders, inquiries, profiles, admin tools, and categories.
 - `middleware/`: Holds JWT authentication, role checks, and image upload setup.
 - `routes/`: Defines API endpoint URLs and attaches middleware/controllers.
@@ -26,7 +26,7 @@ FarmConnect Backend is the Node.js, Express, and MariaDB/MySQL API for the FarmC
 
 - Node.js 18 or newer
 - npm
-- MariaDB or MySQL
+- PostgreSQL
 
 ## Setup
 
@@ -47,7 +47,8 @@ cp .env.example .env
 ```env
 PORT=5000
 DB_HOST=localhost
-DB_USER=root
+DB_PORT=5432
+DB_USER=postgres
 DB_PASSWORD=your_database_password
 DB_NAME=farmconnect
 JWT_SECRET=replace_this_with_a_long_random_secret
@@ -56,19 +57,25 @@ CLIENT_URL=http://localhost:5173
 CLIENT_URLS=http://localhost:5173,http://127.0.0.1:5173
 ```
 
-4. Create the database and tables:
+4. Create the database:
 
 ```bash
-mysql -u root -p < database/schema.sql
+createdb farmconnect
 ```
 
-5. Load sample data:
+5. Create the tables:
 
 ```bash
-mysql -u root -p farmconnect < database/seed.sql
+psql -d farmconnect -f database/schema.sql
 ```
 
-6. Start the development server:
+6. Load sample data:
+
+```bash
+psql -d farmconnect -f database/seed.sql
+```
+
+7. Start the development server:
 
 ```bash
 npm run dev
@@ -80,9 +87,13 @@ The backend runs at `http://localhost:5000` by default.
 
 - `PORT`: Express server port, default `5000`.
 - `DB_HOST`: Database host, usually `localhost`.
+- `DB_PORT`: Database port, default `5432`.
 - `DB_USER`: Database username.
 - `DB_PASSWORD`: Database password.
 - `DB_NAME`: Database name, default `farmconnect`.
+- `DATABASE_URL`: Optional full PostgreSQL connection string.
+- `DB_SSL`: Set to `true` when your PostgreSQL provider requires SSL.
+- `DB_CONNECTION_LIMIT`: Maximum PostgreSQL pool connections, default `10`.
 - `JWT_SECRET`: Secret key used to sign JWTs.
 - `JWT_EXPIRES_IN`: Token lifetime, for example `1d`.
 - `CLIENT_URL`: Frontend URL allowed by CORS.
@@ -126,7 +137,7 @@ All seeded accounts use the password `password123`.
 
 - If `npm run dev` fails because `nodemon` is missing, rerun `npm install`.
 - If database login fails, check `DB_USER`, `DB_PASSWORD`, and `DB_HOST` in `.env`.
-- If the database does not exist, rerun `mysql -u root -p < database/schema.sql`.
+- If the database does not exist, run `createdb farmconnect`, then rerun `psql -d farmconnect -f database/schema.sql`.
 - If the frontend receives a CORS error, add the exact frontend origin to `CLIENT_URLS`, then restart the backend.
 
 ## JWT Authentication

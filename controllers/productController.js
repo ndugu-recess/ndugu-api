@@ -5,7 +5,7 @@ function buildProductFilters(query) {
   const values = [];
 
   if (query.name) {
-    filters.push("p.product_name LIKE ?");
+    filters.push("p.product_name ILIKE ?");
     values.push(`%${query.name}%`);
   }
 
@@ -15,7 +15,7 @@ function buildProductFilters(query) {
   }
 
   if (query.district) {
-    filters.push("p.district LIKE ?");
+    filters.push("p.district ILIKE ?");
     values.push(`%${query.district}%`);
   }
 

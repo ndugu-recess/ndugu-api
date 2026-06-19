@@ -1,16 +1,14 @@
-USE farmconnect;
-
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE audit_logs;
-TRUNCATE TABLE favorites;
-TRUNCATE TABLE inquiries;
-TRUNCATE TABLE orders;
-TRUNCATE TABLE products;
-TRUNCATE TABLE product_categories;
-TRUNCATE TABLE buyer_profiles;
-TRUNCATE TABLE farmer_profiles;
-TRUNCATE TABLE users;
-SET FOREIGN_KEY_CHECKS = 1;
+TRUNCATE TABLE
+  audit_logs,
+  favorites,
+  inquiries,
+  orders,
+  products,
+  product_categories,
+  buyer_profiles,
+  farmer_profiles,
+  users
+RESTART IDENTITY CASCADE;
 
 -- Every sample account uses the password: password123
 INSERT INTO users (id, full_name, email, phone, password, role, status) VALUES
@@ -73,3 +71,7 @@ INSERT INTO favorites (buyer_id, product_id) VALUES
 (5, 2),
 (6, 7),
 (7, 4);
+
+SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users), true);
+SELECT setval(pg_get_serial_sequence('product_categories', 'id'), (SELECT MAX(id) FROM product_categories), true);
+SELECT setval(pg_get_serial_sequence('products', 'id'), (SELECT MAX(id) FROM products), true);
