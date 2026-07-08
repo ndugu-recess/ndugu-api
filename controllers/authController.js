@@ -12,14 +12,14 @@ function createToken(user) {
 
 async function register(req, res) {
   const { full_name, email, phone, password, role } = req.body;
-  const allowedRoles = ["farmer", "buyer"];
+  const allowedRoles = ["farmer", "buyer", "logistics"]; // add Logistics Operator to Register Roles
 
   if (!full_name || !email || !phone || !password || !role) {
     return res.status(400).json({ message: "Full name, email, phone, password, and role are required." });
   }
 
   if (!allowedRoles.includes(role)) {
-    return res.status(400).json({ message: "Role must be farmer or buyer." });
+    return res.status(400).json({ message: "Role must be farmer, buyer or logistics." });
   }
 
   const [existingUsers] = await pool.query("SELECT id FROM users WHERE email = ?", [email]);
