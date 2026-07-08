@@ -1,4 +1,8 @@
+SET search_path TO ndugu;
+
 TRUNCATE TABLE
+  freight_orders,
+  logistics_operator_profiles,
   audit_logs,
   favorites,
   inquiries,
@@ -7,8 +11,6 @@ TRUNCATE TABLE
   product_categories,
   buyer_profiles,
   farmer_profiles,
-  logistics_operator_profiles,
-  freight_orders,
   users
 RESTART IDENTITY CASCADE;
 
@@ -21,7 +23,8 @@ INSERT INTO users (id, full_name, email, phone, password, role, status) VALUES
 (5, 'Daniel Kato', 'buyer1@farmconnect.test', '+256700000005', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'buyer', 'active'),
 (6, 'Miriam Atim', 'buyer2@farmconnect.test', '+256700000006', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'buyer', 'active'),
 (7, 'Joshua Muwanga', 'buyer3@farmconnect.test', '+256700000007', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'buyer', 'active'),
-(8, 'Agnes Nankya', 'buyer4@farmconnect.test', '+256700000008', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'buyer', 'active');
+(8, 'Agnes Nankya', 'buyer4@farmconnect.test', '+256700000008', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'buyer', 'active'),
+(9, 'Lwanga Logistics', 'logistics1@farmconnect.test', '+256700000009', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'logistics', 'active');
 
 INSERT INTO farmer_profiles (user_id, farm_name, farm_description, district, subcounty, village, address) VALUES
 (2, 'Namusoke Fresh Farm', 'Mixed crop farm supplying maize, beans, and vegetables.', 'Wakiso', 'Nangabo', 'Kiteezi', 'Kiteezi trading center'),
@@ -65,9 +68,9 @@ INSERT INTO orders (buyer_id, farmer_id, product_id, quantity_requested, total_e
 INSERT INTO logistics_operator_profiles (user_id, opp_name, opp_description, district, subcounty, village, address, vehicle, max_tonnage) VALUES
 (9, 'Lwanga Logistics', 'Reliable logistics operator handling deliveries across Central and Eastern Uganda.', 'Kampala', 'Makindye', 'Kabalagala', 'Plot 12, Kabalagala Road', 'Toyota Hilux', 20);
 
-INSERT INTO freight_orders (buyer_id, opp_id, order_id, order_destination, tonnage) VALUES
-(5, 1, 2, 'Jinja central market', 1),
-(8, 1, 4, 'Seeta trading center', 2);
+INSERT INTO freight_orders (buyer_id, opp_id, order_id, farmer_id, order_destination, tonnage) VALUES
+(5, 1, 2, 4, 'Jinja central market', 1),
+(8, 1, 4, 2, 'Seeta trading center', 2);
 
 INSERT INTO inquiries (buyer_id, farmer_id, product_id, message, status) VALUES
 (5, 2, 2, 'Are the beans sorted by size?', 'open'),
@@ -81,8 +84,8 @@ INSERT INTO favorites (buyer_id, product_id) VALUES
 (6, 7),
 (7, 4);
 
-SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users), true);
-SELECT setval(pg_get_serial_sequence('product_categories', 'id'), (SELECT MAX(id) FROM product_categories), true);
-SELECT setval(pg_get_serial_sequence('products', 'id'), (SELECT MAX(id) FROM products), true);
-SELECT setval(pg_get_serial_sequence('logistics_operator_profiles', 'id'), (SELECT MAX(id) FROM logistics_operator_profiles), true);
-SELECT setval(pg_get_serial_sequence('freight_orders', 'id'), (SELECT MAX(id) FROM freight_orders), true);
+SELECT setval(pg_get_serial_sequence('ndugu.users', 'id'), (SELECT MAX(id) FROM users), true);
+SELECT setval(pg_get_serial_sequence('ndugu.product_categories', 'id'), (SELECT MAX(id) FROM product_categories), true);
+SELECT setval(pg_get_serial_sequence('ndugu.products', 'id'), (SELECT MAX(id) FROM products), true);
+SELECT setval(pg_get_serial_sequence('ndugu.logistics_operator_profiles', 'id'), (SELECT MAX(id) FROM logistics_operator_profiles), true);
+SELECT setval(pg_get_serial_sequence('ndugu.freight_orders', 'id'), (SELECT MAX(id) FROM freight_orders), true);

@@ -1,3 +1,8 @@
+CREATE SCHEMA IF NOT EXISTS ndugu;
+SET search_path TO ndugu;
+
+DROP TABLE IF EXISTS freight_orders CASCADE;
+DROP TABLE IF EXISTS logistics_operator_profiles CASCADE;
 DROP TABLE IF EXISTS audit_logs CASCADE;
 DROP TABLE IF EXISTS favorites CASCADE;
 DROP TABLE IF EXISTS inquiries CASCADE;
@@ -22,7 +27,7 @@ CREATE TABLE users (
   email VARCHAR(120) NOT NULL UNIQUE,
   phone VARCHAR(30) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'farmer', 'buyer')),
+  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'farmer', 'buyer', 'logistics')),
   status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -190,6 +195,10 @@ CREATE TABLE logistics_operator_profiles (
   CONSTRAINT fk_logistics_opp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TRIGGER logistics_operator_profiles_set_updated_at
+BEFORE UPDATE ON logistics_operator_profiles
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 -- Frieght Orders Table
 
 CREATE TABLE freight_orders (
@@ -207,16 +216,12 @@ CREATE TABLE freight_orders (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  CONSTRAINT fk_freight_order_user FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE
-  CONSTRAINT fk_freight_order_logistics_opp FOREIGN KEY (opp_id) REFERENCES logistics_operator_profiles(id) ON DELETE CASCADE
-  CONSTRAINT fk_freight_order_farmer FOREIGN KEY (farmer_id) REFERENCES farmer_profiles(id) ON DELETE CASCADE
-  CONSTRAINT fk_freight_order__orders FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-
+  CONSTRAINT fk_freight_order_user FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_freight_order_logistics_opp FOREIGN KEY (opp_id) REFERENCES logistics_operator_profiles(id) ON DELETE CASCADE,
+  CONSTRAINT fk_freight_order_farmer FOREIGN KEY (farmer_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_freight_order_orders FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
--- Relevant Table Mutation
-
--- users table
-
-ALTER TABLE users DROP CONSTRAINT users_role_check; -- drop active CHECK
-ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('admin','farmer','buyer', 'logistics')); -- Add new CHECK
+CREATE TRIGGER freight_orders_set_updated_at
+BEFORE UPDATE ON freight_orders
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
