@@ -7,6 +7,8 @@ TRUNCATE TABLE
   product_categories,
   buyer_profiles,
   farmer_profiles,
+  logistics_operator_profiles,
+  freight_orders,
   users
 RESTART IDENTITY CASCADE;
 
@@ -60,6 +62,13 @@ INSERT INTO orders (buyer_id, farmer_id, product_id, quantity_requested, total_e
 (7, 3, 4, 12, 1656000, 'pickup', 'Need maize for milling next week.', 'pending'),
 (8, 2, 10, 20, 50000, 'delivery', 'Can you deliver to Seeta?', 'completed');
 
+INSERT INTO logistics_operator_profiles (user_id, opp_name, opp_description, district, subcounty, village, address, vehicle, max_tonnage) VALUES
+(9, 'Lwanga Logistics', 'Reliable logistics operator handling deliveries across Central and Eastern Uganda.', 'Kampala', 'Makindye', 'Kabalagala', 'Plot 12, Kabalagala Road', 'Toyota Hilux', 20);
+
+INSERT INTO freight_orders (buyer_id, opp_id, order_id, order_destination, tonnage) VALUES
+(5, 1, 2, 'Jinja central market', 1),
+(8, 1, 4, 'Seeta trading center', 2);
+
 INSERT INTO inquiries (buyer_id, farmer_id, product_id, message, status) VALUES
 (5, 2, 2, 'Are the beans sorted by size?', 'open'),
 (6, 4, 7, 'Do you have a recent moisture content reading?', 'answered'),
@@ -75,3 +84,5 @@ INSERT INTO favorites (buyer_id, product_id) VALUES
 SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users), true);
 SELECT setval(pg_get_serial_sequence('product_categories', 'id'), (SELECT MAX(id) FROM product_categories), true);
 SELECT setval(pg_get_serial_sequence('products', 'id'), (SELECT MAX(id) FROM products), true);
+SELECT setval(pg_get_serial_sequence('logistics_operator_profiles', 'id'), (SELECT MAX(id) FROM logistics_operator_profiles), true);
+SELECT setval(pg_get_serial_sequence('freight_orders', 'id'), (SELECT MAX(id) FROM freight_orders), true);
