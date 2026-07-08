@@ -28,7 +28,8 @@ const pgPool = new Pool({
   port: Number(process.env.DB_PORT) || 5432,
   user: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "farmconnect",
+  database: process.env.DB_NAME || "ndugu",
+  schema: process.env.DB_SCHEMA || "ndugu",
   max: Number(process.env.DB_CONNECTION_LIMIT) || 10,
   ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false
 });

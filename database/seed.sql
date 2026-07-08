@@ -14,7 +14,7 @@ RESTART IDENTITY CASCADE;
 
 -- Every sample account uses the password: password123
 INSERT INTO users (id, full_name, email, phone, password, role, status) VALUES
-(1, 'FarmConnect Admin', 'admin@farmconnect.test', '+256700000001', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'admin', 'active'),
+(1, 'admin', 'francis.musango@imaralli.com', '+256751031187', '$2a$10$AoXAFJWJd0yhAni.qMBaxuOg/iE24klsOS1zOkqdB.tiigDiiX0CG', 'admin', 'active'),
 (2, 'Sarah Namusoke', 'farmer1@farmconnect.test', '+256700000002', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'farmer', 'active'),
 (3, 'Peter Okello', 'farmer2@farmconnect.test', '+256700000003', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'farmer', 'active'),
 (4, 'Grace Auma', 'farmer3@farmconnect.test', '+256700000004', '$2b$10$L9fzOpqxx/m3Ulcowil3NeTk8/GnCHsj29oy.LKPlOToq67TH8EpS', 'farmer', 'active'),
