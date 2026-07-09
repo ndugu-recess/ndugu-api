@@ -30,6 +30,7 @@ const pgPool = new Pool({
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "ndugu",
   schema: process.env.DB_SCHEMA || "ndugu",
+  options: '--search_path=ndugu',
   max: Number(process.env.DB_CONNECTION_LIMIT) || 10,
   ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false
 });
