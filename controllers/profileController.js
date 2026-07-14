@@ -111,7 +111,7 @@ async function searchProfile(req, res) {
         ? 'logistics_operator_profiles'
         : 'buyer_profiles';
 
-  const { query } = req.body;
+  const  query  = req.body;
 
   const allowedFilterFields = [
     'opp_name',
