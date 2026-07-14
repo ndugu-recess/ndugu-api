@@ -211,7 +211,8 @@ CREATE TABLE freight_orders (
 
   order_destination VARCHAR(256) NOT NULL,
   tonnage INTEGER NOT NULL,
-
+  delivery_status VARCHAR(30) NOT NULL DEFAULT 'pending'
+    CHECK (delivery_status IN ('pending', 'assigned', 'picked_up', 'in_transit', 'delivered', 'cancelled')),
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

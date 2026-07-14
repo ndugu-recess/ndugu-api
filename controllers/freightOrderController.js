@@ -9,14 +9,15 @@ async function createFreightOrder(req, res) {
 	}
 
 	const [orders] = await pool.query("SELECT * FROM orders WHERE id = ?", [order_id]);
-	if (!orders[0]) return res.status(404).json({ message: "Referenced order not found." });
+	const order = orders[0];
+	if (!order) return res.status(404).json({ message: "Referenced order not found." });
 
 	const buyerId = req.user && req.user.id ? req.user.id : null;
 
 	const [result] = await pool.query(
-		`INSERT INTO freight_orders (buyer_id, opp_id, order_id, order_destination, tonnage)
-		 VALUES (?, ?, ?, ?, ?)`,
-		[buyerId, opp_id, order_id, order_destination, tonnage]
+		`INSERT INTO freight_orders (buyer_id, opp_id, order_id, farmer_id, order_destination, tonnage)
+		 VALUES (?, ?, ?, ?, ?, ?)`,
+		[buyerId, opp_id, order_id, order.farmer_id, order_destination, tonnage]
 	);
 
 	res.status(201).json({ message: "Freight order created.", id: result.insertId });
@@ -56,7 +57,7 @@ async function getOperatorFreightOrders(req, res) {
 }
 
 async function updateFreightOrder(req, res) {
-	const { order_destination, tonnage, opp_id } = req.body;
+	const { order_destination, tonnage, opp_id, delivery_status } = req.body;
 
 	const [rows] = await pool.query("SELECT * FROM freight_orders WHERE id = ?", [req.params.id]);
 	const freight = rows[0];
@@ -77,6 +78,7 @@ async function updateFreightOrder(req, res) {
 	if (order_destination !== undefined) { updates.push("order_destination = ?"); params.push(order_destination); }
 	if (tonnage !== undefined) { updates.push("tonnage = ?"); params.push(tonnage); }
 	if (opp_id !== undefined) { updates.push("opp_id = ?"); params.push(opp_id); }
+	if (delivery_status !== undefined) { updates.push("delivery_status = ?"); params.push(delivery_status); }
 
 	if (updates.length === 0) return res.status(400).json({ message: "No updatable fields provided." });
 
